@@ -12,16 +12,19 @@ class Dscode < Formula
     # formula's; `std_npm_args` installs it into libexec and links its bin.
     system "npm", "install", *std_npm_args
     bin.install_symlink libexec.glob("bin/*")
-    # Marks the installation as Homebrew's: `dscode update` then moves only the Hub
-    # profile and leaves the launcher to `brew upgrade dscode`.
-    (libexec.glob("lib/node_modules/*/cli.mjs").first.dirname/".dscode-brew").write "1\n"
+    # Marks the installation as Homebrew's, so `dscode update` moves only the Hub profile
+    # and leaves the launcher to `brew upgrade dscode`. The package is scoped, so its
+    # directory is two levels below node_modules.
+    launcher = libexec.glob("lib/node_modules/*/*/cli.mjs").first
+    odie "the launcher did not install where this formula expects it" if launcher.nil?
+    (launcher.dirname/".dscode-brew").write "1\n"
   end
 
   test do
     # `--version` reads release.json and would pass with no dependencies at all, so
     # assert one resolves, and that the marker the launcher reads is in place.
     system "node", "-e", "require.resolve('@dsh-plugin-hub/cli', { paths: ['#{libexec}'] })"
-    assert_path_exists libexec.glob("lib/node_modules/*/.dscode-brew").first
+    assert_path_exists libexec.glob("lib/node_modules/*/*/.dscode-brew").first
     assert_match version.to_s, shell_output("#{bin}/dscode --version")
   end
 end
