@@ -22,8 +22,9 @@ class Dscode < Formula
 
   test do
     # `--version` reads release.json and would pass with no dependencies at all, so
-    # assert one resolves, and that the marker the launcher reads is in place.
-    system "node", "-e", "require.resolve('@dsh-plugin-hub/cli', { paths: ['#{libexec}'] })"
+    # assert one resolves the way the launcher does — from inside the package, because a
+    # global npm install nests the dependencies under it — and that the marker is in place.
+    system "node", "-e", "require.resolve('@dsh-plugin-hub/cli', { paths: ['#{libexec}/lib/node_modules/@toddzheng024/dscode'] })"
     assert_path_exists libexec.glob("lib/node_modules/*/*/.dscode-brew").first
     assert_match version.to_s, shell_output("#{bin}/dscode --version")
   end
