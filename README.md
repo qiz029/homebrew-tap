@@ -1,7 +1,11 @@
 # DSCODE tap
 
+Homebrew 7 refuses to load a formula from a third-party tap until you trust it, so the
+first install is three commands:
+
 ```sh
 brew tap qiz029/tap
+brew trust qiz029/tap
 brew install dscode
 ```
 
