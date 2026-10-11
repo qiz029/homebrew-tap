@@ -1,8 +1,8 @@
 class Dscode < Formula
   desc "Terminal coding agent harness: DSH TUI, computer use, skills and telemetry"
   homepage "https://github.com/qiz029/dscode"
-  url "https://registry.npmjs.org/@toddzheng024/dscode/-/dscode-0.7.36.tgz"
-  sha256 "ebe12b95e877461a18778f22bf2a07c7e5d40d3f31538322a8823f87d28e4bbe"
+  url "https://registry.npmjs.org/@toddzheng024/dscode/-/dscode-0.7.39.tgz"
+  sha256 "877d686529f75c6d96bb797508c3485aeb0635d54bbe7801fe2c3ce065fb68c4"
   license "MIT"
 
   depends_on "node"
