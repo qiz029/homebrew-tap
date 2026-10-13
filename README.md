@@ -9,9 +9,18 @@ brew trust qiz029/tap
 brew install dscode
 ```
 
-The formula installs the launcher published to npm (`@toddzheng024/dscode`) into its
-`libexec` and links `dscode`. On a Homebrew installation `dscode update` moves only the
-Hub profile; `brew upgrade dscode` owns the launcher itself.
+The formula installs the self-contained application for Apple Silicon or Intel into
+`libexec` and links only `dscode`. Node, Harness and native dependencies are included;
+no separate Node/npm installation or Hub profile is needed. An existing `dsh`
+installation is not used or replaced. User data defaults to
+`~/.local/share/dscode-state`, outside the Homebrew Cellar.
 
-`.github/workflows/bump.yml` follows the released launcher on its own: it runs daily and
-on demand, reads the npm version, recomputes the tarball's sha256 and commits the change.
+Exit running DSCODE sessions and use `brew upgrade dscode` to replace the complete
+application. `dscode update` points Homebrew installations to that command.
+Older npm/Hub data requires explicit migration; see the
+[distribution guide](https://github.com/qiz029/dscode/blob/main/docs/distribution.md).
+
+`.github/workflows/bump.yml` runs daily and on demand. It downloads the formula from
+the latest GitHub release, verifies its digest and checks that both archive URLs and
+checksums match the release metadata before committing an update. A missing or
+incomplete standalone release leaves the existing formula in place.

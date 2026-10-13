@@ -16,19 +16,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      # Deliberately not wired to the dscode repository's tag push: the launcher is the
-      # last stage that release publishes, so a formula bumped earlier would send a user
-      # to a Hub profile that is not there yet. Following npm's `latest` cannot race it.
-      - name: Follow the published launcher
+      # Use the formula generated with the qualified standalone archives. Incomplete
+      # releases fail before changing the tap; terminal distribution no longer follows npm.
+      - name: Follow the published application
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          version=$(npm view @toddzheng024/dscode version)
-          url="https://registry.npmjs.org/@toddzheng024/dscode/-/dscode-${version}.tgz"
-          sha=$(curl -fsSL "$url" | sha256sum | cut -d' ' -f1)
-          sed -i "s|^  url \".*\"|  url \"${url}\"|" Formula/dscode.rb
-          sed -i "s|^  sha256 \".*\"|  sha256 \"${sha}\"|" Formula/dscode.rb
-          if git diff --quiet; then echo "already at ${version}"; exit 0; fi
+          node scripts/bump.mjs
+          ruby -c Formula/dscode.rb
+          if git diff --quiet; then echo 'already current'; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -am "dscode ${version}"
+          git commit -am "Update DSCODE to the published standalone package"
           git push

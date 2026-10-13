@@ -1,31 +1,27 @@
 class Dscode < Formula
-  desc "Terminal coding agent harness: DSH TUI, computer use, skills and telemetry"
+  desc "Self-contained DSCODE coding agent"
   homepage "https://github.com/qiz029/dscode"
-  url "https://registry.npmjs.org/@toddzheng024/dscode/-/dscode-0.7.39.tgz"
-  sha256 "877d686529f75c6d96bb797508c3485aeb0635d54bbe7801fe2c3ce065fb68c4"
+  version "0.7.41"
   license "MIT"
+  depends_on :macos
 
-  depends_on "node"
+  on_arm do
+    url "https://github.com/qiz029/dscode/releases/download/v0.7.41/dscode-0.7.41-darwin-arm64-standalone.tar.gz"
+    sha256 "483d83b2ec3e717b3cf3ec39d6b058772e8be56f34b863838407d31cd0e3f4a7"
+  end
+  on_intel do
+    url "https://github.com/qiz029/dscode/releases/download/v0.7.41/dscode-0.7.41-darwin-x64-standalone.tar.gz"
+    sha256 "fff4cb9fa8e853d914c8116d2c7c0d5cdbb4b1c63e09ae70fe5e31ac01960dd0"
+  end
 
   def install
-    # The published launcher, so the pinned dependency graph stays npm's rather than the
-    # formula's; `std_npm_args` installs it into libexec and links its bin.
-    system "npm", "install", *std_npm_args
-    bin.install_symlink libexec.glob("bin/*")
-    # Marks the installation as Homebrew's, so `dscode update` moves only the Hub profile
-    # and leaves the launcher to `brew upgrade dscode`. The package is scoped, so its
-    # directory is two levels below node_modules.
-    launcher = libexec.glob("lib/node_modules/*/*/cli.mjs").first
-    odie "the launcher did not install where this formula expects it" if launcher.nil?
-    (launcher.dirname/".dscode-brew").write "1\n"
+    libexec.install Dir["*", ".dscode-standalone.json"]
+    (libexec/".dscode-brew").write "Homebrew owns this application package.\n"
+    bin.install_symlink libexec/"dscode"
   end
 
   test do
-    # `--version` reads release.json and would pass with no dependencies at all, so
-    # assert one resolves the way the launcher does — from inside the package, because a
-    # global npm install nests the dependencies under it — and that the marker is in place.
-    system "node", "-e", "require.resolve('@dsh-plugin-hub/cli', { paths: ['#{libexec}/lib/node_modules/@toddzheng024/dscode'] })"
-    assert_path_exists libexec.glob("lib/node_modules/*/*/.dscode-brew").first
     assert_match version.to_s, shell_output("#{bin}/dscode --version")
+    assert_match "native modules OK", shell_output("#{bin}/dscode --check")
   end
 end
