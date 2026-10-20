@@ -1,17 +1,17 @@
 class Dscode < Formula
   desc "Self-contained DSCODE coding agent"
   homepage "https://github.com/qiz029/dscode"
-  version "0.7.48"
+  version "0.7.49"
   license "MIT"
   depends_on :macos
 
   on_arm do
-    url "https://github.com/qiz029/dscode/releases/download/v0.7.48/dscode-0.7.48-darwin-arm64-standalone.tar.gz"
-    sha256 "a0be5215c14ca85b25b3d24df5e1c430c712426a14e74f17523b995489c3b659"
+    url "https://github.com/qiz029/dscode/releases/download/v0.7.49/dscode-0.7.49-darwin-arm64-standalone.tar.gz"
+    sha256 "5d94b68eec4bf38a663ae26636b1e2d91e8f6a9c182ba06e6f6341ce572166b5"
   end
   on_intel do
-    url "https://github.com/qiz029/dscode/releases/download/v0.7.48/dscode-0.7.48-darwin-x64-standalone.tar.gz"
-    sha256 "fb5864810ca54f495549041b74fdee2f0e503325adcab6a6baa7aef91cf0ead0"
+    url "https://github.com/qiz029/dscode/releases/download/v0.7.49/dscode-0.7.49-darwin-x64-standalone.tar.gz"
+    sha256 "72171e25585003237e8d99250d91e316fab169af4f24babf798152fecc123259"
   end
 
   def install
